@@ -6,7 +6,7 @@ About
 - With SDL as a backend (@libsdl-org).
 - The die() function in the CLI reverse is courtesy of Zed A. Shaw (@zedshaw).
 
-## !! **EXPERIMENTAL:** Use at your own risk !!
+## As-Is No Warranties
 
 Current Progress
 -----------------  
