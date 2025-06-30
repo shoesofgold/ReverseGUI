@@ -14,7 +14,7 @@ Current Progress
 
 TODO
 -----
-- implement copy/paste
+- I think I've done what I can.
 
 LIBRARY CHANGES
 ---------------
