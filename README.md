@@ -3,7 +3,7 @@ About
 **A silly tool for reversing strings.**
 
 - Made with Raylib and Raygui by Ramon Santamaria (@raysan5).
-- With SDL as a backend (@libsdl-org).
+- With SDL3 as a backend (@libsdl-org).
 - The die() function in the CLI reverse is courtesy of Zed A. Shaw (@zedshaw).
 
 ## As-Is No Warranties
@@ -126,13 +126,6 @@ cmake -B build
 cmake --build build
 ```
 
-If you don't want the terminal output running in the background,\
-then simply use a Release build:
-```shell
-cmake -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build
-```
-\
 LICENSE
 -------
 - Raylib is released under zlib license.

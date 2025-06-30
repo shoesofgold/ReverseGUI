@@ -33,7 +33,7 @@ set(RAYGUI_EXAMPLES ${RAYGUI_ROOT}/examples)
 
 # Cmake Options
 set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/install)
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # raygui
@@ -98,4 +98,5 @@ endif()
 add_executable(ReverseGUI
 			   res/icon_info.rc
                src/ReverseGUI.c)
+
 target_link_libraries(ReverseGUI raylib raygui)
