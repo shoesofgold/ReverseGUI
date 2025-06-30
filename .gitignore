@@ -1,0 +1,5 @@
+# Ignore everything in this folder
+compile_commands.json
+src/scratch.c
+session.vim
+release/
