@@ -210,7 +210,7 @@ static void ButtonSubmit(int* fields, TBox* text, TBox* out){
         if (strlen(text[i].text) == 0) {
             continue;
         } else {
-            strncpy_s(out[i].text, MAXCHARS, strReverse(text[i].text), MAXCHARS);
+            strncpy(out[i].text, strReverse(text[i].text), MAXCHARS);
         }
     }
 }
@@ -218,8 +218,8 @@ static void ButtonSubmit(int* fields, TBox* text, TBox* out){
 static void ButtonClear(int* fields, TBox* text, TBox* reverse){
     int num = *fields;
     for (int i = 0; i < num; i++){
-        strncpy_s(text[i].text, MAXCHARS, "\0", MAXCHARS);
-        strncpy_s(reverse[i].text, MAXCHARS, "\0", MAXCHARS);
+        strncpy(text[i].text, "\0", MAXCHARS);
+        strncpy(reverse[i].text, "\0", MAXCHARS);
     }
 }
 
@@ -236,8 +236,8 @@ static void ButtonSubField(int* fields, const int* max, TBox* text, TBox* revers
         *fields -= 1;
     }
     for (int i = *fields; i < *max; i++) {
-        strncpy_s(text[i].text, MAXCHARS, "\0", MAXCHARS);
-        strncpy_s(reverse[i].text, MAXCHARS, "\0", MAXCHARS);
+        strncpy(text[i].text, "\0", MAXCHARS);
+        strncpy(reverse[i].text, "\0", MAXCHARS);
     }
 }
 
@@ -246,7 +246,7 @@ static void ButtonCopy(char* text){
 }
 
 static void ButtonPaste(char* text){
-    strncpy_s(text, MAXCHARS, GetClipboardText(), MAXCHARS);
+    strncpy(text, GetClipboardText(), MAXCHARS);
 }
 
 static TBox* textAlloc(const int* fields){
