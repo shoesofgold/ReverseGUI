@@ -36,6 +36,9 @@ static void ButtonSubmit(int* fields, TBox* text, TBox* out);
 static void ButtonClear(int* fields, TBox* text, TBox* reverse);
 static void ButtonAddField(int* fields, const int* max);
 static void ButtonSubField(int* fields, const int* max, TBox* text, TBox* reverse);
+static void ButtonCopy(char* text);
+static void ButtonPaste(char* text);
+
 static char* strReverse(const char* msg);
 static TBox* textAlloc(const int* fields);
 
@@ -135,9 +138,14 @@ int main(){
 
         BeginScissorMode(ReversePanelView.x, ReversePanelView.y, ReversePanelView.width, ReversePanelView.height);
         for (int i = 0; i < FieldsValue; i++) {
-            if (strlen(reversedOutputs[i].text) == 0) continue;
-            Rectangle rec = { ScrollPnlReverseRec.x + ScrollPanelOutputScrollOffset.x + 10, ScrollPnlReverseRec.y + (ScrollPanelOutputScrollOffset.y + 35) + (reverseOffset * i), 560, 24 };
-            if (GuiTextBox(rec, reversedOutputs[i].text, 128, reversedOutputs[i].mode)) reversedOutputs[i].mode = !reversedOutputs[i].mode;
+            if (strlen(reversedOutputs[i].text) == 0) {
+                continue;
+            } else {
+                Rectangle rec = { ScrollPnlReverseRec.x + ScrollPanelOutputScrollOffset.x + 10, ScrollPnlReverseRec.y + (ScrollPanelOutputScrollOffset.y + 35) + (reverseOffset * i), 560, 24 };
+                if (GuiTextBox(rec, reversedOutputs[i].text, 128, reversedOutputs[i].mode)) reversedOutputs[i].mode = !reversedOutputs[i].mode;
+                Rectangle cpy = { ScrollPnlReverseRec.x + ScrollPanelOutputScrollOffset.x + 575, ScrollPnlReverseRec.y + (ScrollPanelOutputScrollOffset.y + 35) + (reverseOffset * i), 24, 24 };
+                if (GuiButton(cpy, "#16#")) ButtonCopy(reversedOutputs[i].text);
+            }
         }
         EndScissorMode();
         //----------------------------------------------------------------------------------
@@ -154,6 +162,8 @@ int main(){
         for (int i = 0; i < FieldsValue; i++){
             Rectangle rec = { ScrollPnlTextRec.x + ScrollPanelInputScrollOffset.x + 10, ScrollPnlTextRec.y + (ScrollPanelInputScrollOffset.y + 35) + (offset * (i)), 560, 24 };
             if (GuiTextBox(rec, textInputs[i].text, 128, textInputs[i].mode)) textInputs[i].mode = !textInputs[i].mode;
+            Rectangle pst = { ScrollPnlTextRec.x + ScrollPanelInputScrollOffset.x + 575, ScrollPnlTextRec.y + (ScrollPanelInputScrollOffset.y + 35) + (offset * i), 24, 24 };
+            if (GuiButton(pst, "#18#")) ButtonPaste(textInputs[i].text);
         }
         EndScissorMode();
         //----------------------------------------------------------------------------------
@@ -229,6 +239,14 @@ static void ButtonSubField(int* fields, const int* max, TBox* text, TBox* revers
         strncpy_s(text[i].text, MAXCHARS, "\0", MAXCHARS);
         strncpy_s(reverse[i].text, MAXCHARS, "\0", MAXCHARS);
     }
+}
+
+static void ButtonCopy(char* text){
+    SetClipboardText(text);
+}
+
+static void ButtonPaste(char* text){
+    strncpy_s(text, MAXCHARS, GetClipboardText(), MAXCHARS);
 }
 
 static TBox* textAlloc(const int* fields){
