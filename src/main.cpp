@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
     const std::string TEXTURE_PARROTS = TEXTURE_PATH.string();
 
 	SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
-	InitWindow(screenWidth, screenHeight, "Fuck Around");
+	InitWindow(screenWidth, screenHeight, "ReverseGUI");
     //SetExitKey(0);
 	SetTargetFPS(144);
 	rlImGuiSetup(true);
@@ -59,10 +59,10 @@ int main(int argc, char* argv[])
 
 		// show ImGui Content
 		bool open = false;
-		//ImGui::ShowDemoWindow(&open);
+		ImGui::ShowDemoWindow(&open);
 
 		open = false;
-		if (ImGui::Begin("", &open))
+		if (ImGui::Begin("ReverseGUI", &open))
 		{
 
 		}
