@@ -10,12 +10,12 @@ BEGIN
     BLOCK "040904E4"    // English US
     BEGIN
       VALUE "CompanyName", "ShoesOfGold"
-      VALUE "FileDescription", "ReverseGUI"
+      VALUE "FileDescription", "FuckAround"
       VALUE "FileVersion", "1.0"
-      VALUE "InternalName", "ReverseGUI"
+      VALUE "InternalName", "FuckAround"
       VALUE "LegalCopyright", "Public Domain: No Restrictions"
       //VALUE "OriginalFilename", ""
-      VALUE "ProductName", "ReverseGUI"
+      VALUE "ProductName", "FuckAround"
       VALUE "ProductVersion", "1.0"
     END
   END
