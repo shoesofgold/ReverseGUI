@@ -17,7 +17,6 @@
 #include "rlImGui.h"
 #include "exe_path.hpp"
 
-
 // DPI scaling functions
 float ScaleToDPIF(float value)
 {
@@ -33,7 +32,7 @@ int main(int argc, char* argv[])
 {
 	// Initialization
 	//--------------------------------------------------------------------------------------
-	int screenWidth = 1280;
+	int screenWidth = 1480;
 	int screenHeight = 800;
 
     const auto TEXTURE_PATH = executable_paths::resource_path("resources/parrots.png");
@@ -41,10 +40,9 @@ int main(int argc, char* argv[])
 
 	SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
 	InitWindow(screenWidth, screenHeight, "ReverseGUI");
-    //SetExitKey(0);
+    //SetExitKey(0); //Reserved for release build
 	SetTargetFPS(144);
 	rlImGuiSetup(true);
-
 
 	Texture image = LoadTexture(TEXTURE_PARROTS.c_str());
 
@@ -61,11 +59,11 @@ int main(int argc, char* argv[])
 		bool open = false;
 		ImGui::ShowDemoWindow(&open);
 
-		open = false;
-		if (ImGui::Begin("ReverseGUI", &open))
-		{
-
-		}
+        ImGui::SetNextWindowSize(ImVec2(screenWidth, screenHeight));
+		open = true;
+		ImGui::Begin("ReverseGUI", &open);
+		
+		
 		ImGui::End();
 
 		// end ImGui Content
