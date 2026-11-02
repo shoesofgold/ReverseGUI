@@ -67,6 +67,8 @@ endif()
     
 # Test Module (Scratch Pad)
 add_executable(scratch
+    src/exe_path.cpp
 	src/scratch.cpp)
 
 target_link_libraries(${PROJ} raylib imgui rlimgui)
+target_link_libraries(scratch raylib imgui rlimgui)
