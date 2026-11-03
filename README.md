@@ -3,6 +3,7 @@ About
 **A silly tool for reversing strings.**
 
 - Made with Raylib (raysan5).
+- rlImGui (raylib-extras)
 - With SDL3 as a backend (libsdl-org).
 - Design made with ImGui (ocornut).
 
@@ -22,7 +23,7 @@ Current Progress
 
 TODO
 -----
-- Release v2.
+- Release build for v2.
 - Write cmake install script.
 
 VENDOR LIBRARY CHANGES
