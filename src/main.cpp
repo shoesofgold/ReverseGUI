@@ -14,6 +14,7 @@
 #include "exe_path.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
+#include "misc/cpp/imgui_stdlib.h"
 #include "raylib.h"
 #include "rlImGui.h"
 #include <algorithm>
@@ -25,23 +26,12 @@ float ScaleToDPIF(float value) { return GetWindowScaleDPI().x * value; }
 
 int ScaleToDPII(int value) { return int(GetWindowScaleDPI().x * value); }
 
-static const int ROWS_MAX = 20;
+static const int ROWS_MAX = 50;
 static const int CHARS_MAX = 255;
 
 static char *strReverse(const char *msg);
-static void ButtonCopy(const std::string &text);
-static void ButtonPaste(std::string &text);
-static void ButtonAddField(int &fields, int max);
-static std::string strReverse(const std::string &msg);
-
 static void ButtonSubmit(int fields, const std::vector<std::string> &text,
                          std::vector<std::string> &out);
-
-static void ButtonClear(int fields, std::vector<std::string> &text,
-                        std::vector<std::string> &reverse);
-
-static void ButtonSubField(int &fields, int max, std::vector<std::string> &text,
-                           std::vector<std::string> &reverse);
 
 int main(int argc, char *argv[]) {
   static const auto TEXTURE_PATH =
@@ -49,7 +39,7 @@ int main(int argc, char *argv[]) {
   static const std::string TEXTURE_PARROTS = TEXTURE_PATH.string();
   static Texture image = LoadTexture(TEXTURE_PARROTS.c_str());
 
-  static char* buf = {};
+  static char *buf = {};
   static std::vector<std::string> bufInput = {};
   static std::vector<std::string> bufOutput = {};
   static int rowsCurrent{};
@@ -118,31 +108,32 @@ int main(int argc, char *argv[]) {
     ImGui::TableHeadersRow();
     ImGui::EndTable();
 
-    /*
-        ImGuiListClipper clipperInputs;
-        clipperInputs.Begin(rowsCurrent);
-        while (clipperInputs.Step()) {
-          for (int row = clipperInputs.DisplayStart; row <
-       clipperInputs.DisplayEnd; row++) { ImGui::TableNextRow(); for (int column
-       = 0; column < 3; column++) { ImGui::TableSetColumnIndex(column);
-              ImGui::Text("Hello %d,%d", column, row);
-            }
-          }
+    ImGuiListClipper clipperInputs;
+    clipperInputs.Begin(rowsCurrent);
+
+    ImGui::BeginTable("tableReverseStrings", 2, ImGuiTableFlags_Borders);
+    ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed,
+                            screenWidth - 110.0f); // Default to auto
+    ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed,
+                            70.0f); // Default to auto
+
+    while (clipperInputs.Step()) {
+      for (int row = clipperInputs.DisplayStart; row < clipperInputs.DisplayEnd;
+           row++) {
+        ImGui::PushID(row);
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+        ImGui::InputText("", &bufInput[row]);
+        ImGui::TableSetColumnIndex(1);
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::Button("Paste")) {
+          bufInput[row].assign(
+              ImGui::GetClipboardText() ? ImGui::GetClipboardText() : "");
         }
-    */
-    ImGui::BeginTable("tableInputStrings", 2, ImGuiTableFlags_Borders);
-    ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed,
-                            screenWidth - 100.0f); // Default to auto
-    ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed,
-                            60.0f); // Default to auto
-    ImGui::TableNextRow();
-    ImGui::TableSetColumnIndex(0);
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-    char buf[255] = {};
-    ImGui::InputText("", buf, IM_COUNTOF(buf));
-    ImGui::TableSetColumnIndex(1);
-    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x); // Right-aligned
-    ImGui::Button("Paste");
+        ImGui::PopID();
+      }
+    }
     ImGui::EndTable();
 
     ImGui::EndChild();
@@ -165,9 +156,9 @@ int main(int argc, char *argv[]) {
 
     ImGui::BeginTable("tableReverseStrings", 2, ImGuiTableFlags_Borders);
     ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed,
-                            screenWidth - 100.0f); // Default to auto
+                            screenWidth - 110.0f); // Default to auto
     ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed,
-                            60.0f); // Default to auto
+                            70.0f); // Default to auto
 
     while (clipperOutputs.Step()) {
       for (int row = clipperOutputs.DisplayStart;
@@ -176,31 +167,15 @@ int main(int argc, char *argv[]) {
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-        //IM_COUNTOF(buf)
-        unsigned long long ullSize = {};
-        ImGui::InputText("", bufOutput[row].data(), sizeof(ullSize));
+        ImGui::InputText("", &bufOutput[row]);
         ImGui::TableSetColumnIndex(1);
         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         if (ImGui::Button("Copy")) {
-          ButtonCopy(bufOutput[row].data());
+          ImGui::SetClipboardText(bufOutput[row].data());
         }
         ImGui::PopID();
       }
     }
-    /*
-        ImGui::BeginTable("tableReverseStrings", 2, ImGuiTableFlags_Borders);
-        ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed,
-                                screenWidth - 100.0f); // Default to auto
-        ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed,
-                                60.0f); // Default to auto
-        ImGui::TableNextRow();
-        ImGui::TableSetColumnIndex(0);
-        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-        ImGui::InputText("", bufOutput, IM_COUNTOF(bufOutput));
-        ImGui::TableSetColumnIndex(1);
-        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x); //
-       Right-aligned ImGui::Button("Copy");
-    */
     ImGui::EndTable();
     ImGui::EndChild();
     ImGui::PopStyleVar();
@@ -223,11 +198,21 @@ int main(int argc, char *argv[]) {
     ImGui::TableSetColumnIndex(0);
     ImGui::Button("Submit");
     ImGui::TableSetColumnIndex(1);
-    ImGui::Button("Add Row");
+    if (ImGui::Button("Add Row")) {
+      if (rowsCurrent <= ROWS_MAX)
+        rowsCurrent++;
+    }
     ImGui::TableSetColumnIndex(2);
-    ImGui::Button("Remove Row");
+    if (ImGui::Button("Remove Row")) {
+      if (rowsCurrent >= 2)
+        rowsCurrent--;
+    }
     ImGui::TableSetColumnIndex(3);
-    ImGui::Button("Reset");
+    if (ImGui::Button("Reset")) {
+      std::fill(bufInput.begin(), bufInput.end(), "");
+      std::fill(bufOutput.begin(), bufOutput.end(), "");
+      rowsCurrent = 5;
+    };
     ImGui::EndTable();
 
     ImGui::EndChild();
@@ -274,51 +259,4 @@ static void ButtonSubmit(int fields, const std::vector<std::string> &text,
       out[i] = strReverse(text[i]).substr(0, CHARS_MAX - 1);
     }
   }
-}
-
-static void ButtonClear(int fields, std::vector<std::string> &text,
-                        std::vector<std::string> &reverse) {
-  const int count =
-      std::min({std::max(fields, 0), static_cast<int>(text.size()),
-                static_cast<int>(reverse.size())});
-
-  for (int i = 0; i < count; ++i) {
-    text[i].clear();
-    reverse[i].clear();
-  }
-}
-
-static void ButtonAddField(int &fields, int max) {
-  if (fields < max) {
-    ++fields;
-  }
-}
-
-static void ButtonSubField(int &fields, int max, std::vector<std::string> &text,
-                           std::vector<std::string> &reverse) {
-  if (fields > 1) {
-    --fields;
-  }
-
-  const int end = std::min({std::max(max, 0), static_cast<int>(text.size()),
-                            static_cast<int>(reverse.size())});
-
-  for (int i = std::max(fields, 0); i < end; ++i) {
-    text[i].clear();
-    reverse[i].clear();
-  }
-}
-
-static void ButtonCopy(const std::string &text) {
-  SetClipboardText(text.c_str());
-}
-
-static void ButtonPaste(std::string &text) {
-  const char *clipboardText = GetClipboardText();
-  text = clipboardText ? clipboardText : "";
-  text.resize(std::min(text.size(), static_cast<std::size_t>(CHARS_MAX - 1)));
-}
-
-static std::vector<char *> textAlloc(int fields) {
-  return std::vector<char *>(std::max(fields, 0));
 }

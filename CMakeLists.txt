@@ -55,6 +55,7 @@ ${CMAKE_SOURCE_DIR}/vendor/rlimgui/rlimgui.cpp)
 set(proj_sources
     src/main.cpp
     src/exe_path.cpp
+    vendor/imgui/misc/cpp/imgui_stdlib.cpp
     res/icon_info.rc)
 
 if(WIN32 AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
