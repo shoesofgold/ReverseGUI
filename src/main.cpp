@@ -18,6 +18,7 @@
 #include "raylib.h"
 #include "rlImGui.h"
 #include <algorithm>
+#include <cstring>
 #include <string>
 #include <vector>
 
@@ -29,9 +30,8 @@ int ScaleToDPII(int value) { return int(GetWindowScaleDPI().x * value); }
 static const int ROWS_MAX = 50;
 static const int CHARS_MAX = 255;
 
-static char *strReverse(const char *msg);
-static void ButtonSubmit(int fields, const std::vector<std::string> &text,
-                         std::vector<std::string> &out);
+static void strReverse(std::vector<std::string> &vecIn,
+                       std::vector<std::string> &vecOut, int &idx);
 
 int main(int argc, char *argv[]) {
   static const auto TEXTURE_PATH =
@@ -39,9 +39,9 @@ int main(int argc, char *argv[]) {
   static const std::string TEXTURE_PARROTS = TEXTURE_PATH.string();
   static Texture image = LoadTexture(TEXTURE_PARROTS.c_str());
 
-  static char *buf = {};
   static std::vector<std::string> bufInput = {};
   static std::vector<std::string> bufOutput = {};
+  static int idxBufInput = {};
   static int rowsCurrent{};
 
   static int screenWidth = 740;
@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
     ImGuiListClipper clipperInputs;
     clipperInputs.Begin(rowsCurrent);
 
-    ImGui::BeginTable("tableReverseStrings", 2, ImGuiTableFlags_Borders);
+    ImGui::BeginTable("tableInputStrings", 2, ImGuiTableFlags_Borders);
     ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed,
                             screenWidth - 110.0f); // Default to auto
     ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed,
@@ -125,6 +125,7 @@ int main(int argc, char *argv[]) {
         ImGui::TableSetColumnIndex(0);
         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         ImGui::InputText("", &bufInput[row]);
+        idxBufInput = row;
         ImGui::TableSetColumnIndex(1);
         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         if (ImGui::Button("Paste")) {
@@ -196,23 +197,29 @@ int main(int argc, char *argv[]) {
     ImGui::BeginTable("tableInputStrings", 4);
     ImGui::TableNextRow();
     ImGui::TableSetColumnIndex(0);
-    ImGui::Button("Submit");
+    if (ImGui::Button("Submit")) {
+      strReverse(bufInput, bufOutput, idxBufInput);
+    }
+
     ImGui::TableSetColumnIndex(1);
     if (ImGui::Button("Add Row")) {
-      if (rowsCurrent <= ROWS_MAX)
+      if (rowsCurrent < ROWS_MAX)
         rowsCurrent++;
     }
+
     ImGui::TableSetColumnIndex(2);
     if (ImGui::Button("Remove Row")) {
       if (rowsCurrent >= 2)
         rowsCurrent--;
     }
+
     ImGui::TableSetColumnIndex(3);
     if (ImGui::Button("Reset")) {
       std::fill(bufInput.begin(), bufInput.end(), "");
       std::fill(bufOutput.begin(), bufOutput.end(), "");
       rowsCurrent = 5;
-    };
+    }
+
     ImGui::EndTable();
 
     ImGui::EndChild();
@@ -238,25 +245,13 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-//------------------------------------------------------------------------------------
-// Controls Functions Definitions (local)
-//------------------------------------------------------------------------------------
-
-static std::string strReverse(const std::string &msg) {
-  std::string result = msg;
-  std::reverse(result.begin(), result.end());
-  return result;
-}
-
-static void ButtonSubmit(int fields, const std::vector<std::string> &text,
-                         std::vector<std::string> &out) {
-  const int count =
-      std::min({std::max(fields, 0), static_cast<int>(text.size()),
-                static_cast<int>(out.size())});
-
-  for (int i = 0; i < count; ++i) {
-    if (!text[i].empty()) {
-      out[i] = strReverse(text[i]).substr(0, CHARS_MAX - 1);
-    }
+static void strReverse(std::vector<std::string> &vecIn,
+                       std::vector<std::string> &vecOut, int &idx) {
+  int len = strlen(vecIn[idx].data());
+  char *msgIn = vecIn[idx].data();
+  char msgOut[255] = {};
+  for (int i = 0; i < len; i++) {
+    msgOut[i] = msgIn[len - i - 1];
   }
+  vecOut[idx].assign(msgOut);
 }
