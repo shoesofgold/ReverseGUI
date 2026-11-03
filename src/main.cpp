@@ -31,7 +31,7 @@ static const int ROWS_MAX = 50;
 static const int CHARS_MAX = 255;
 
 static void strReverse(std::vector<std::string> &vecIn,
-                       std::vector<std::string> &vecOut, int &idx);
+                       std::vector<std::string> &vecOut);
 
 int main(int argc, char *argv[]) {
   static const auto TEXTURE_PATH =
@@ -41,7 +41,6 @@ int main(int argc, char *argv[]) {
 
   static std::vector<std::string> bufInput = {};
   static std::vector<std::string> bufOutput = {};
-  static int idxBufInput = {};
   static int rowsCurrent{};
 
   static int screenWidth = 740;
@@ -125,7 +124,6 @@ int main(int argc, char *argv[]) {
         ImGui::TableSetColumnIndex(0);
         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         ImGui::InputText("", &bufInput[row]);
-        idxBufInput = row;
         ImGui::TableSetColumnIndex(1);
         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         if (ImGui::Button("Paste")) {
@@ -198,7 +196,7 @@ int main(int argc, char *argv[]) {
     ImGui::TableNextRow();
     ImGui::TableSetColumnIndex(0);
     if (ImGui::Button("Submit")) {
-      strReverse(bufInput, bufOutput, idxBufInput);
+      strReverse(bufInput, bufOutput);
     }
 
     ImGui::TableSetColumnIndex(1);
@@ -246,12 +244,20 @@ int main(int argc, char *argv[]) {
 }
 
 static void strReverse(std::vector<std::string> &vecIn,
-                       std::vector<std::string> &vecOut, int &idx) {
-  int len = strlen(vecIn[idx].data());
-  char *msgIn = vecIn[idx].data();
-  char msgOut[255] = {};
-  for (int i = 0; i < len; i++) {
-    msgOut[i] = msgIn[len - i - 1];
+                       std::vector<std::string> &vecOut) {
+  int strInElems = vecIn.size();
+  vecOut.clear();
+  for (int i = 0; i < strInElems; i++) {
+    int len = strlen(vecIn[i].data());
+    char *msgIn = vecIn[i].data();
+    char msgOut[255] = {};
+    for (int j = 0; j < len; j++) {
+      msgOut[j] = msgIn[len - j - 1];
+    }
+    if (len > 255) {
+      std::string charsTooMany = "TOO MANY CHARACTERS";
+      vecOut.push_back(charsTooMany);
+    }
+    vecOut.push_back(msgOut);
   }
-  vecOut[idx].assign(msgOut);
 }
