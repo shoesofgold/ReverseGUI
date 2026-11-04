@@ -42,6 +42,7 @@ static void strReverse(std::vector<std::string> &vecIn,
                        std::vector<std::string> &vecOut, int &idx) {
   int strInElems = stringIn.size();
   vecOut.clear();
+  vecOut.shrink_to_fit();
   int len = strlen(vecIn[idx].data());
   char *msgIn = vecIn[idx].data();
   char msgOut[255] = {};

@@ -88,8 +88,7 @@ int main(int argc, char *argv[]) {
     // Background (Main Window)
     ImGui::SetNextWindowFlags(
         ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
-            ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove |
-            ImGuiWindowFlags_NoSavedSettings,
+            ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove,
         RgBackground);
     ImGui::SetNextWindowSize(ImVec2(screenWidth, screenHeight));
     ImGui::SetNextWindowPos(ImVec2(0, 0));
@@ -99,10 +98,11 @@ int main(int argc, char *argv[]) {
     ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
     ImGui::BeginChild("ChildInput", ImVec2(0, screenHeight - 475),
                       ImGuiChildFlags_Borders, ImGuiWindowFlags_None);
+    ImGui::PopStyleVar();
 
     ImGui::BeginTable("tableInputStringsHeader", 1,
                       ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg);
-    ImGui::TableSetupColumn("Input Strings", ImGuiTableColumnFlags_WidthFixed,
+    ImGui::TableSetupColumn("Input Strings", ImGuiTableColumnFlags_WidthStretch,
                             screenWidth);
     ImGui::TableHeadersRow();
     ImGui::EndTable();
@@ -111,9 +111,9 @@ int main(int argc, char *argv[]) {
     clipperInputs.Begin(rowsCurrent);
 
     ImGui::BeginTable("tableInputStrings", 2, ImGuiTableFlags_Borders);
-    ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed,
+    ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch,
                             screenWidth - 110.0f); // Default to auto
-    ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed,
+    ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch,
                             70.0f); // Default to auto
 
     while (clipperInputs.Step()) {
@@ -136,17 +136,17 @@ int main(int argc, char *argv[]) {
     ImGui::EndTable();
 
     ImGui::EndChild();
-    ImGui::PopStyleVar();
 
     ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
     ImGui::BeginChild("ChildReverse", ImVec2(0, screenHeight - 475),
                       ImGuiChildFlags_Borders, ImGuiWindowFlags_None);
+    ImGui::PopStyleVar();
 
     // Reverse (output) Child Table
     ImGui::BeginTable("tableReverseStringsHeader", 1,
                       ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg);
-    ImGui::TableSetupColumn("Reverse Strings", ImGuiTableColumnFlags_WidthFixed,
-                            screenWidth);
+    ImGui::TableSetupColumn("Reverse Strings",
+                            ImGuiTableColumnFlags_WidthStretch, screenWidth);
     ImGui::TableHeadersRow();
     ImGui::EndTable();
 
@@ -154,9 +154,9 @@ int main(int argc, char *argv[]) {
     clipperOutputs.Begin(rowsCurrent);
 
     ImGui::BeginTable("tableReverseStrings", 2, ImGuiTableFlags_Borders);
-    ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed,
+    ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch,
                             screenWidth - 110.0f); // Default to auto
-    ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed,
+    ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch,
                             70.0f); // Default to auto
 
     while (clipperOutputs.Step()) {
@@ -177,22 +177,20 @@ int main(int argc, char *argv[]) {
     }
     ImGui::EndTable();
     ImGui::EndChild();
-    ImGui::PopStyleVar();
 
     // Controls Child Table
     ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10.0f, 10.0f));
     ImGui::BeginChild("ChildControls", ImVec2(0, 100), ImGuiChildFlags_Borders,
                       ImGuiWindowFlags_None);
+    ImGui::PopStyleVar();
 
-    ImGui::BeginTable("tableInputStringsHeader", 1,
+    ImGui::BeginTable("tableInputControlsHeader", 1,
                       ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg);
-    ImGui::TableSetupColumn("Controls", ImGuiTableColumnFlags_WidthFixed,
-                            screenWidth);
+    ImGui::TableSetupColumn("Controls", ImGuiTableColumnFlags_WidthStretch);
     ImGui::TableHeadersRow();
     ImGui::EndTable();
 
-    ImGui::BeginTable("tableInputStrings", 4);
+    ImGui::BeginTable("tableControls", 4, ImGuiTableFlags_Borders);
     ImGui::TableNextRow();
     ImGui::TableSetColumnIndex(0);
     if (ImGui::Button("Submit")) {
@@ -200,13 +198,13 @@ int main(int argc, char *argv[]) {
     }
 
     ImGui::TableSetColumnIndex(1);
-    if (ImGui::Button("Add Row")) {
+    if (ImGui::Button("Row +")) {
       if (rowsCurrent < ROWS_MAX)
         rowsCurrent++;
     }
 
     ImGui::TableSetColumnIndex(2);
-    if (ImGui::Button("Remove Row")) {
+    if (ImGui::Button("Row -")) {
       if (rowsCurrent >= 2)
         rowsCurrent--;
     }
@@ -217,12 +215,9 @@ int main(int argc, char *argv[]) {
       std::fill(bufOutput.begin(), bufOutput.end(), "");
       rowsCurrent = 5;
     }
-
     ImGui::EndTable();
 
     ImGui::EndChild();
-    ImGui::PopStyleVar();
-    ImGui::PopStyleVar();
 
     ImGui::End();
 
@@ -258,7 +253,7 @@ static void strReverse(std::vector<std::string> &vecIn,
       }
       vecOut.push_back(msgOut);
     } else {
-      //std::string charsTooMany = "TOO MANY CHARACTERS";
+      // std::string charsTooMany = "TOO MANY CHARACTERS";
       vecOut.push_back("");
     }
   }
