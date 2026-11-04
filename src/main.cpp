@@ -247,17 +247,19 @@ static void strReverse(std::vector<std::string> &vecIn,
                        std::vector<std::string> &vecOut) {
   int strInElems = vecIn.size();
   vecOut.clear();
+  vecOut.shrink_to_fit();
   for (int i = 0; i < strInElems; i++) {
     int len = strlen(vecIn[i].data());
-    char *msgIn = vecIn[i].data();
-    char msgOut[255] = {};
-    for (int j = 0; j < len; j++) {
-      msgOut[j] = msgIn[len - j - 1];
+    if (len < 200 && len > 1) {
+      char *msgIn = vecIn[i].data();
+      char msgOut[CHARS_MAX] = {};
+      for (int j = 0; j < len; j++) {
+        msgOut[j] = msgIn[len - j - 1];
+      }
+      vecOut.push_back(msgOut);
+    } else {
+      //std::string charsTooMany = "TOO MANY CHARACTERS";
+      vecOut.push_back("");
     }
-    if (len > 255) {
-      std::string charsTooMany = "TOO MANY CHARACTERS";
-      vecOut.push_back(charsTooMany);
-    }
-    vecOut.push_back(msgOut);
   }
 }
