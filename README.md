@@ -9,7 +9,7 @@ About
 
 Updates
 --------
-- Working on v2.
+- v2.0.0 released
 - Raylib updates have allowed for seemless SDL3 integration with no library changes.
 - Also, ImGui integration with rlImGui.
 - Hell Yes.
@@ -23,8 +23,9 @@ Current Progress
 
 TODO
 -----
-- Release build for v2.
-- Write cmake install script.
+- Tweak UI
+- Add more keyboard shortcuts
+- Make graphical cut and past buttons like v1.0.0
 
 VENDOR LIBRARY CHANGES
 ---------------
@@ -36,7 +37,14 @@ BUILDING
 Building should be as simple as using two cmake commands:
 ```shell
 cmake -B build
-cmake --build build
+cmake --build build --config [Debug | Release]
+```
+
+INSTALLATION
+------------
+Binaries get copied into "install" at the project root.
+```shell
+cmake --install build
 ```
 
 LICENSE

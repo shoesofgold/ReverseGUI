@@ -11,10 +11,13 @@
  *
  ********************************************************************************************/
 
+#ifdef _WIN32
+#include "SDL3/SDL_main.h"
+#endif
+
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "misc/cpp/imgui_stdlib.h"
-#include "raylib.h"
 #include "rlImGui.h"
 #include <algorithm>
 #include <cstring>
@@ -31,8 +34,13 @@ static const int CHARS_MAX = 255;
 
 static void strReverse(std::vector<std::string> &vecIn,
                        std::vector<std::string> &vecOut);
+                       
+// Source - https://stackoverflow.com/a/58819006
+// Posted by Alexander Ushakov
+// Retrieved 2026-11-07, License - CC BY-SA 4.0
 
-int main(int argc, char *argv[]) {
+int main(int argc, char** argv) {
+
   static std::vector<std::string> bufInput = {};
   static std::vector<std::string> bufOutput = {};
   static int rowsCurrent{};
@@ -251,3 +259,4 @@ static void strReverse(std::vector<std::string> &vecIn,
     }
   }
 }
+
