@@ -11,7 +11,6 @@
  *
  ********************************************************************************************/
 
-#include "exe_path.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "misc/cpp/imgui_stdlib.h"
@@ -34,11 +33,6 @@ static void strReverse(std::vector<std::string> &vecIn,
                        std::vector<std::string> &vecOut);
 
 int main(int argc, char *argv[]) {
-  static const auto TEXTURE_PATH =
-      executable_paths::resource_path("resources/parrots.png");
-  static const std::string TEXTURE_PARROTS = TEXTURE_PATH.string();
-  static Texture image = LoadTexture(TEXTURE_PARROTS.c_str());
-
   static std::vector<std::string> bufInput = {};
   static std::vector<std::string> bufOutput = {};
   static int rowsCurrent{};
@@ -231,7 +225,6 @@ int main(int argc, char *argv[]) {
   // De-Initialization
   //--------------------------------------------------------------------------------------
   rlImGuiShutdown();
-  UnloadTexture(image);
   CloseWindow(); // Close window and OpenGL context
   //--------------------------------------------------------------------------------------
 

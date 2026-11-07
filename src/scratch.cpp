@@ -12,8 +12,6 @@
  *
  ********************************************************************************************/
 
-#include "exe_path.hpp"
-#include <algorithm>
 #include <cstring>
 #include <iostream>
 #include <string>

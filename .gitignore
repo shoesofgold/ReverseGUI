@@ -3,3 +3,5 @@ compile_commands.json
 imgui.ini
 session.vim
 build/
+install/
+linux/
