@@ -29,7 +29,7 @@ Usage
 ### Known Working:
 ```
 <C-c> Copy
-<C-p> Paste
+<C-v> Paste
 <Tab> Next Form
 <S-Tab> Prev Form
 <Esc> Kill
