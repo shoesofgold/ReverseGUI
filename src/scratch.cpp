@@ -1,53 +1,81 @@
-
 /*******************************************************************************************
- *
- *   raylib-extras [ImGui] example - Simple Integration
- *
- *	This is a simple ImGui Integration
- *	It is done using C++ but with C style code
- *	It can be done in C as well if you use the C ImGui wrapper
- *	https://github.com/cimgui/cimgui
- *
- *   Copyright (c) 2021 Jeffery Myers
- *
- ********************************************************************************************/
+*
+*   raylib-extras [ImGui] example - Simple Integration
+*
+*	This is a simple ImGui Integration
+*	It is done using C++ but with C style code
+*	It can be done in C as well if you use the C ImGui wrapper
+*	https://github.com/cimgui/cimgui
+*
+*   Copyright (c) 2021 Jeffery Myers
+*
+********************************************************************************************/
 
-#include <cstring>
-#include <iostream>
-#include <string>
-#include <vector>
+#include "SDL3/SDL_main.h"
+#include "raylib.h"
+#include "raymath.h"
 
-static std::vector<std::string> stringIn = {};
-static std::vector<std::string> stringOut = {};
-static int bufIdx = {};
+#include "imgui.h"
+#include "rlImGui.h"
 
-static void strReverse(std::vector<std::string> &vecIn,
-                       std::vector<std::string> &vecOut, int &idx);
 
-int main(int argc, char *argv[]) {
-  stringIn.push_back("suck");
-  stringIn.push_back("it");
-  stringIn.push_back("dry");
-
-  std::cout << stringIn.size() << "\n";
-  for (int i = 0; i < stringIn.size(); i++) {
-    strReverse(stringIn, stringOut, i);
-    std::cout << stringOut[i] << "\n";
-  }
+// DPI scaling functions
+float ScaleToDPIF(float value)
+{
+    return GetWindowScaleDPI().x * value;
 }
 
-static void strReverse(std::vector<std::string> &vecIn,
-                       std::vector<std::string> &vecOut, int &idx) {
-  int strInElems = stringIn.size();
-  vecOut.clear();
-  vecOut.shrink_to_fit();
-  int len = strlen(vecIn[idx].data());
-  char *msgIn = vecIn[idx].data();
-  char msgOut[255] = {};
-  for (int i = 0; i < strInElems; i++) {
-    for (int j = 0; j < len; j++) {
-      msgOut[j] = msgIn[len - j - 1];
-    }
-    vecOut.push_back(msgOut);
-  }
+int ScaleToDPII(int value)
+{
+    return int(GetWindowScaleDPI().x * value);
+}
+
+int main(int argc, char* argv[])
+{
+	// Initialization
+	//--------------------------------------------------------------------------------------
+	int screenWidth = 1280;
+	int screenHeight = 800;
+
+	SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
+	InitWindow(screenWidth, screenHeight, "raylib-Extras [ImGui] example - simple ImGui Demo");
+	SetTargetFPS(144);
+	rlImGuiSetup(true);
+
+	// Main game loop
+	while (!WindowShouldClose())    // Detect window close button or ESC key
+	{
+		BeginDrawing();
+		ClearBackground(DARKGRAY);
+
+		// start ImGui Conent
+		rlImGuiBegin();
+
+		// show ImGui Content
+		bool open = true;
+		ImGui::ShowDemoWindow(&open);
+
+		// end ImGui Content
+		rlImGuiEnd();
+
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+			DrawText("Prssed", 0, 0, 20, RED);
+
+		if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+			DrawText("Down", 0, 20, 20, GREEN);
+
+		if (IsWindowFocused())
+			DrawText("Focused", 100, 20, 20, WHITE);
+
+		EndDrawing();
+		//----------------------------------------------------------------------------------
+	}
+
+	// De-Initialization
+	//--------------------------------------------------------------------------------------   
+    rlImGuiShutdown();
+	CloseWindow();        // Close window and OpenGL context
+	//--------------------------------------------------------------------------------------
+
+	return 0;
 }

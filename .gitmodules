@@ -10,3 +10,6 @@
 [submodule "vendor/SDL"]
 	path = vendor/SDL
 	url = https://github.com/libsdl-org/SDL.git
+[submodule "vendor/cmrc"]
+	path = vendor/cmrc
+	url = https://github.com/vector-of-bool/cmrc.git
